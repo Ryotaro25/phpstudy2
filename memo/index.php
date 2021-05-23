@@ -18,13 +18,8 @@
 <main>
 <h2>Practice</h2>
 
-  <?php 
-  try {
-    $db = new PDO('mysql:dbname=mydb;host=localhost;charaset=utf8',
-    'root', 'root');
-  } catch(PDOException $e) {
-    echo 'DB接続エラー: '.$e->getMessage();
-  }
+<?php 
+require('dbconnect.php');
 
 $memos = $db->querY('SELECT * FROM memos ORDER BY id DESC');
 ?>
@@ -32,7 +27,7 @@ $memos = $db->querY('SELECT * FROM memos ORDER BY id DESC');
 
 <article>
   <?php while ($memo = $memos -> fetch()): ?>
-    <p><a href="a"><?php print(mb_substr($memo['memo'], 0, 50)); ?></a></p>
+    <p><a href="memo.php?id=<?php print($memo['id']); ?>"><?php print(mb_substr($memo['memo'], 0, 50)); ?></a></p>
     <time><?php print($memo['created_at']); ?></time>
   <?php endwhile; ?>  
 </article>
