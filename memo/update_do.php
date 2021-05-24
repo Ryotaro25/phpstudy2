@@ -17,25 +17,17 @@
 
 <main>
 <h2>Practice</h2>
+<pre>
+  <?php 
+  require('dbconnect.php');
 
-<?php 
-require('dbconnect.php'); 
-$id = $_REQUEST['id'];
-if (!is_numeric($id) || $id <= 0) {
-  print('1以上の数字で指定してください');
-  exit();
-} 
+  $statement = $db->prepare('UPDATE memos SET memo=? WHERE id =?');
+  $statement->execute(array($_POST['memo'], $_POST['id']));
+  ?>
+  <p>メモの内容を変更しました</p>
+</pre>
 
-$memos = $db->prepare('SELECT * FROM memos WHERE id=?');
-$memos->execute(array($id));
-$memo = $memos->fetch();
-?>
-<article>
-  <pre><?php print($memo['memo']); ?></pre>
-  <a href="update.php?id=<?php print($memo['id']); ?>">編集する</a>｜
-  <a href="delete.php?id=<?php print($memo['id']); ?>">削除する</a> |
-  <a href="index.php">戻る</a>
-</article>
+<p><a href="index.php">戻る</a></p>
 </main>
     
 </body>
