@@ -1,5 +1,6 @@
 <?php 
 session_start();
+require("../dbconnect.php");
 
 if (!empty($_POST)) {
   if ($_POST['name'] === '') {
@@ -21,6 +22,16 @@ if (!empty($_POST)) {
 		$ext = substr($fileName, -3);
 		if ($ext != 'jpg' && $ext != 'gif') {
 			$error['image'] = 'type';
+		}
+	}
+
+  //アカウントの重複を確認
+	if(empty($error)) {
+		$member = $db->prepare('SELECT COUNT(*) AS cnt FROM members WHERE email=?');
+		$member->execute(array($_POST['email']));
+		$record = $member->fetch();
+		if($record['cnt'] > 0) {
+			$error['email'] ='duplicate';
 		}
 	}
 
@@ -72,6 +83,9 @@ if ($_REQUEST['action'] == 'rewrite' && isset($_SESSION['join'])) {
 					<?php if ($error['email'] === 'blank'): ?>
 					  <p class="error">メールアドレスを入力してください</p>
 					<?php endif; ?>
+					<?php if ($error['email'] === 'duplicate'): ?>
+					  <p class="error">メールアドレスはすでに使われております</p>
+					<?php endif; ?>
 		<dt>パスワード<span class="required">必須</span></dt>
 		<dd>
         	<input type="password" name="password" size="10" maxlength="20" value="<?php print(htmlspecialchars($_POST['password'], ENT_QUOTES)); ?>" />
@@ -89,7 +103,7 @@ if ($_REQUEST['action'] == 'rewrite' && isset($_SESSION['join'])) {
 					  <p class="error">写真はgif かpngで頼みます</p>
 					<?php endif; ?>
 					<?php if (!empty($error)): ?>
-						<p class="error">画像をもっかい入れてください</p>
+						<p class="error">お手数ですが画像をもっかい入れてください</p>
 					<?php endif; ?>	
     </dd>
 	</dl>
