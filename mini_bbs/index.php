@@ -78,10 +78,14 @@ if (isset($_REQUEST['res'])) {
     <p><?php print(htmlspecialchars($post['message'], ENT_QUOTES)); ?><span class="name">（）</span>
     [<a href="index.php?res=<?php  print(htmlspecialchars($post['id'])) ?>">Re</a>]</p>
     <p class="day"><a href="view.php?id="></a>
-    <a href="view.php?id=">
+    <?php if($post['reply_message_id'] > 0): ?>
+    <a href="view.php?id=<?php print(htmlspecialchars($post['reply_message_id'], ENT_QUOTES)); ?>">
     返信元のメッセージ</a>
-    [<a href="delete.php?id="
+    <?php endif; ?>
+    <?php if($_SESSION['id'] == $post['member_id']): ?>
+    [<a href="delete.php?id=<?php print(htmlspecialchars($post['id'])); ?>"
     style="color: #F33;">削除</a>]
+    <?php endif;　?>
     </p>
     </div>
   <?php endforeach; ?>
